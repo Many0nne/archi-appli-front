@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Spectacle } from '../types/spectacle';
-import { getSpectacles } from '../services/SpectacleService';
+import { getSpectacles } from '../composables/useSpectable';
 import { SpectacleCard } from '../components/SpectacleCard';
 import Navbar from '../components/navbar';
 
