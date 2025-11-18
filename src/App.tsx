@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import LogInPage from './pages/login'
 import LogOutPage from './pages/logOut'
 import RegisterPage from './pages/register'
-import Home from './pages/index'
+import HomePage from './pages/HomePage'
 import useAuthComposable from './composables/useAuth'
+import LogInPage from './pages/logIn'
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -30,7 +30,7 @@ function App() {
         <Route path="/login" element={<LogInPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/logout" element={<LogOutPage />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
