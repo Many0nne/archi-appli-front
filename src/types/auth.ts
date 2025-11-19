@@ -23,3 +23,11 @@ export interface AuthState {
   setToken: (t: string | null) => void
   logout: () => void
 }
+
+export type AuthFormPayload = {
+  username: string
+  password: string
+  email?: string
+}
+
+export type Mode = 'login' | 'register'

@@ -3,13 +3,19 @@ import { InputText } from 'primereact/inputtext'
 import { Password } from 'primereact/password'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast'
-import useAuthComposable from '../composables/useAuth'
 
-type Mode = 'login' | 'register'
+import type { AuthFormPayload, Mode } from '../types'
 
-export default function AuthForm({ mode = 'login', onSuccess }: { mode?: Mode; onSuccess?: () => void }) {
+export default function AuthForm({
+  mode = 'login',
+  onSuccess,
+  onSubmit,
+}: {
+  mode?: Mode
+  onSuccess?: () => void
+  onSubmit?: (payload: AuthFormPayload) => Promise<any>
+}) {
   const toast = useRef<Toast>(null)
-  const { login, register } = useAuthComposable()
 
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -20,13 +26,10 @@ export default function AuthForm({ mode = 'login', onSuccess }: { mode?: Mode; o
     e?.preventDefault()
     setLoading(true)
     try {
-      if (mode === 'login') {
-        await login({ username, password })
-        toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Connecté', life: 2000 })
-      } else {
-        await register({ username, password, email })
-        toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Compte créé', life: 2000 })
-      }
+      if (!onSubmit) throw new Error('No submit handler provided')
+      const payload: AuthFormPayload = { username, password, email: email || undefined }
+      await onSubmit(payload)
+      toast.current?.show({ severity: 'success', summary: 'Success', detail: mode === 'login' ? 'Connecté' : 'Compte créé', life: 2000 })
       onSuccess?.()
     } catch (err: any) {
       toast.current?.show({ severity: 'error', summary: 'Error', detail: err?.message ?? String(err), life: 4000 })

@@ -1,40 +1,58 @@
-import type { Spectacle } from '../types/spectacle';
+import { Card } from 'primereact/card';
+import { Button } from 'primereact/button';
+import type { Spectacle } from '../types';
 
-interface SpectacleCardProps {
-  spectacle: Spectacle;
+interface Props {
+	spectacle: Spectacle;
+	onBuy?: (id: number) => void;
+	className?: string;
 }
 
-export function SpectacleCard({ spectacle }: SpectacleCardProps) {
-  const fallbackImageUrl = 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/06/90/08/1d/amazing-show.jpg?w=1200&h=-1&s=1';
+export default function SpectacleCard({ spectacle, onBuy, className }: Props) {
+	const formattedDate = (() => {
+		try {
+			const d = new Date(spectacle.date);
+			return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+		} catch {
+			return spectacle.date;
+		}
+	})();
 
-  return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg">
-      <img
-        className="w-full"
-        src={fallbackImageUrl}
-        alt={spectacle.title}
-      />
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{spectacle.title}</div>
-        <p className="text-gray-700 text-base">{spectacle.description}</p>
-      </div>
-      <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          {new Date(spectacle.date).toLocaleDateString()}
-        </span>
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          {spectacle.price}€
-        </span>
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          {spectacle.availableTickets} tickets left
-        </span>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-          onClick={() => console.log(`Buying ${spectacle.title}`)}
-        >
-          Buy
-        </button>
-      </div>
-    </div>
-  );
+	const header = (
+		<img
+			src={spectacle.imageUrl}
+			alt={spectacle.title}
+			style={{ width: '100%', height: 200, objectFit: 'cover' }}
+		/>
+	);
+
+	const footer = (
+		<div>
+			<div>
+				<div style={{ fontWeight: 600 }}>Prix</div>
+				<div>{spectacle.price.toFixed(2)} €</div>
+			</div>
+			<div style={{ textAlign: 'right' }}>
+				<div style={{ marginBottom: 6 }}>{spectacle.availableTickets} place(s) disponibles</div>
+				<Button
+					label={spectacle.availableTickets > 0 ? 'Réserver' : 'Complet'}
+					icon="pi pi-shopping-cart"
+					onClick={() => onBuy?.(spectacle.id)}
+					disabled={spectacle.availableTickets <= 0}
+				/>
+			</div>
+		</div>
+	);
+
+	return (
+		<Card
+			title={spectacle.title}
+			subTitle={formattedDate}
+			header={header}
+			footer={footer}
+			className={className ?? 'md:w-25rem'}
+		>
+			<p className="m-0">{spectacle.description}</p>
+		</Card>
+	);
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { Spectacle } from '../types/spectacle';
 import { getSpectacles } from '../composables/useSpectable';
-import { SpectacleCard } from '../components/SpectacleCard';
 import Navbar from '../components/navbar';
+import SpectacleCard from '../components/SpectacleCard';
 
 export default function HomePage() {
   const [spectacles, setSpectacles] = useState<Spectacle[]>([]);
