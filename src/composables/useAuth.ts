@@ -1,68 +1,86 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useKeycloak } from '@react-keycloak/web'
 import { useAuth } from '../stores/useAuth'
-import type { Credentials, AuthResponse, RegisterData } from '../types/auth'
 
 export const API_BASE = import.meta.env.VITE_API_BASE
 
 export function useAuthComposable() {
+  const { keycloak, initialized } = useKeycloak()
   const token = useAuth(state => state.token)
+  const user = useAuth(state => state.user)
   const setToken = useAuth(state => state.setToken)
-  const logout = useAuth(state => state.logout)
+  const setUser = useAuth(state => state.setUser)
+  const logoutStore = useAuth(state => state.logout)
 
-  const login = useCallback(async (credentials: Credentials) => {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    })
-    if (!res.ok) {
-      const text = await res.text()
-      throw new Error(text || 'Login failed')
+  // Synchroniser le token Keycloak avec le store
+  useEffect(() => {
+    if (initialized && keycloak.authenticated && keycloak.token) {
+      setToken(keycloak.token)
+      // Récupérer les infos utilisateur depuis le token
+      if (keycloak.tokenParsed) {
+        setUser({
+          username: keycloak.tokenParsed.preferred_username,
+          email: keycloak.tokenParsed.email,
+          name: keycloak.tokenParsed.name,
+          roles: keycloak.tokenParsed.realm_access?.roles || [],
+        })
+      }
+    } else if (initialized && !keycloak.authenticated) {
+      setToken(null)
+      setUser(null)
     }
-    const data: AuthResponse = await res.json()
-    if (data?.token) setToken(data.token)
-    return data
-  }, [setToken])
+  }, [initialized, keycloak.authenticated, keycloak.token, keycloak.tokenParsed, setToken, setUser])
 
-  const register = useCallback(async (payload: RegisterData) => {
-    const res = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-    if (!res.ok) {
-      const text = await res.text()
-      throw new Error(text || 'Register failed')
-    }
-    const data: AuthResponse = await res.json()
-    if (data?.token) setToken(data.token)
-    return data
-  }, [setToken])
+  const login = useCallback(() => {
+    keycloak.login()
+  }, [keycloak])
 
-  const refresh = useCallback(async () => {
-    const res = await fetch(`${API_BASE}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-    })
-    if (!res.ok) return null
-    const data: AuthResponse = await res.json()
-    setToken(data.token)
-    return data
-  }, [setToken])
+  const logout = useCallback(() => {
+    logoutStore()
+    // Rediriger vers la page de logout Keycloak avec retour vers la page d'accueil
+    keycloak.logout({ redirectUri: window.location.origin })
+  }, [keycloak, logoutStore])
+
+  const register = useCallback(() => {
+    keycloak.register()
+  }, [keycloak])
 
   const fetchWithAuth = useCallback(
     async (input: RequestInfo, init: RequestInit = {}) => {
       const headers = new Headers(init.headers ?? undefined)
-      if (token) headers.set('Authorization', `Bearer ${token}`)
+      
+      // Rafraîchir le token si nécessaire
+      if (keycloak.authenticated && keycloak.isTokenExpired(5)) {
+        try {
+          await keycloak.updateToken(5)
+        } catch (error) {
+          console.error('Failed to refresh token', error)
+          keycloak.logout()
+          throw new Error('Session expirée')
+        }
+      }
+
+      if (keycloak.token) {
+        headers.set('Authorization', `Bearer ${keycloak.token}`)
+      }
       headers.set('Content-Type', headers.get('Content-Type') ?? 'application/json')
 
       const res = await fetch(input, { ...init, headers })
       return res
     },
-    [token],
+    [keycloak],
   )
 
-  return { token, login, register, refresh, logout, fetchWithAuth }
+  return { 
+    token, 
+    user,
+    login, 
+    register, 
+    logout, 
+    fetchWithAuth,
+    isAuthenticated: keycloak.authenticated || false,
+    initialized,
+  }
 }
 
 export default useAuthComposable
