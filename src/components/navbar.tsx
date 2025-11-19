@@ -1,22 +1,23 @@
 import { Menubar } from 'primereact/menubar'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../stores/useAuth'
+import useAuthComposable from '../composables/useAuth'
 
 export default function Navbar() {
-  const token = useAuth(s => s.token)
-  const logout = useAuth(s => s.logout)
+  const { isAuthenticated, user } = useAuthComposable()
   const navigate = useNavigate()
 
-  const items = token
+  const items = isAuthenticated
     ? [
         { label: 'Home', icon: 'pi pi-home', command: () => navigate('/') },
         {
+          label: `Bonjour ${user?.username || 'Utilisateur'}`,
+          icon: 'pi pi-user',
+          disabled: true,
+        },
+        {
           label: 'Logout',
           icon: 'pi pi-sign-out',
-          command: () => {
-            logout()
-            navigate('/login')
-          },
+          command: () => navigate('/logout'),
         },
       ]
     : [

@@ -1,18 +1,22 @@
-import { useEffect } from 'react'
-import { useAuth } from '../stores/useAuth'
+import { useEffect, useRef } from 'react'
+import useAuthComposable from '../composables/useAuth'
 
 export default function LogOutPage() {
-  const logout = useAuth(s => s.logout)
+  const { logout, isAuthenticated } = useAuthComposable()
+  const hasLoggedOut = useRef(false)
 
   useEffect(() => {
-    logout()
-    // appeler le backend pour invalider le refresh token une fois implémenté
-  }, [logout])
+    // Éviter les appels multiples de logout (causés par StrictMode)
+    if (isAuthenticated && !hasLoggedOut.current) {
+      hasLoggedOut.current = true
+      logout()
+    }
+  }, [logout, isAuthenticated])
 
   return (
     <div style={{ padding: 24 }}>
-      <h2>Déconnecté</h2>
-      <p>Vous êtes maintenant déconnecté.</p>
+      <h2>Déconnexion en cours...</h2>
+      <p>Vous allez être redirigé...</p>
     </div>
   )
 }

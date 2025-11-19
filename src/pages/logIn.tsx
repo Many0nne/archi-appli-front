@@ -1,20 +1,22 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AuthForm from '../components/authForm'
 import useAuthComposable from '../composables/useAuth'
-import type { Credentials } from '../types/auth'
 
 export default function LogInPage() {
   const navigate = useNavigate()
-  const { login } = useAuthComposable()
+  const { login, isAuthenticated } = useAuthComposable()
 
-  const handleSubmit = async (payload: Credentials) => {
-    return login(payload)
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    } else {
+      login()
+    }
+  }, [isAuthenticated, login, navigate])
 
   return (
     <div style={{ padding: 24 }}>
-      <h2>Connexion</h2>
-      <AuthForm mode="login" onSuccess={() => navigate('/')} onSubmit={handleSubmit} />
+      <h2>Redirection vers Keycloak...</h2>
     </div>
   )
 }
