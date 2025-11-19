@@ -3,4 +3,19 @@
 * {
   margin: 0;
 }
+.nav-menubar .p-menuitem-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* space between icon and label */
+}
+
+.nav-menubar .p-menubar-end {
+  display: flex;
+  align-items: center;
+}
+
+.nav-menubar .p-menubar-start {
+  display: flex;
+  align-items: center;
+}
 
