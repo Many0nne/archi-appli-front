@@ -2,6 +2,7 @@
 
 * {
   margin: 0;
+  font-family: poppins;
 }
 .nav-menubar .p-menuitem-link {
   display: inline-flex;
@@ -19,3 +20,18 @@
   align-items: center;
 }
 
+.outlined-title {
+  -webkit-text-stroke: 1px #58010A;   /* largeur et couleur du contour */
+}
+
+/* Stars component styling: use theatrical button yellow and small shadow */
+.star {
+  color: #FAE647; /* main yellow used by theatre button */
+  font-size: 1.6rem;
+  line-height: 1;
+  text-shadow: 2px 2px 0 #58010A; /* subtle darker outline like title shadow */
+  transition: transform 180ms ease;
+}
+.star-middle {
+  font-size: 2.2rem;
+}
