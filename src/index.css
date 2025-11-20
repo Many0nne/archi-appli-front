@@ -2,12 +2,13 @@
 
 * {
   margin: 0;
-  font-family: poppins;
+  font-family: 'Poppins', sans-serif;
 }
+
 .nav-menubar .p-menuitem-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem; /* space between icon and label */
+  gap: 0.5rem;
 }
 
 .nav-menubar .p-menubar-end {
@@ -20,18 +21,188 @@
   align-items: center;
 }
 
-.outlined-title {
-  -webkit-text-stroke: 1px #58010A;   /* largeur et couleur du contour */
-}
-
-/* Stars component styling: use theatrical button yellow and small shadow */
 .star {
-  color: #FAE647; /* main yellow used by theatre button */
+  color: #FAE647;
   font-size: 1.6rem;
   line-height: 1;
-  text-shadow: 2px 2px 0 #58010A; /* subtle darker outline like title shadow */
+  text-shadow: 2px 2px 0 #58010A;
   transition: transform 180ms ease;
 }
 .star-middle {
   font-size: 2.2rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-shadow {
+    text-shadow: 5px 5px #58010A, 6px 6px #58010A;
+  }
+  .outlined-title {
+    -webkit-text-stroke: 1px #58010A;
+  }
+}
+
+.search-input {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.32);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.12);
+  caret-color: #F9E8CA;
+  transition: box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.search-input::placeholder {
+  color: rgba(255,255,255,0.70);
+  opacity: 1;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 6px rgba(249,232,202,0.08);
+  border-color: rgba(249,232,202,0.45);
+}
+
+.spectacle-card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.spectacle-card:hover .p-card-custom {
+  box-shadow: 4px 4px 0 #58010A;
+}
+
+.p-card-custom {
+  background: rgba(0,0,0,0.36);
+  border: 3px solid rgba(88,1,10,1);
+  box-shadow: 2px 2px #58010A;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  color: #F9E8CA;
+}
+.p-card-custom .p-card-title {
+  color: #F9E8CA;
+  font-family: 'Limelight', cursive;
+  font-size: 1.125rem;
+}
+.p-card-custom .p-card-subtitle {
+  color: rgba(255,255,255,0.8);
+}
+.p-card-custom .p-card-content {
+  padding: 1rem 1rem 0.75rem 1rem;
+}
+.p-card-custom .p-card-footer {
+  background: transparent;
+  padding: 0.75rem 1rem;
+}
+
+.ticket-chip {
+  background: #F9E8CA;
+  color: #58010A;
+  box-shadow: 2px 2px 0 #58010A;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+.p-datatable,
+.p-datatable .p-datatable-wrapper {
+  background: transparent;
+  color: #F9E8CA;
+}
+
+.p-datatable-sm .p-datatable-thead > tr > th {
+  color: #F9E8CA;
+  background: rgba(0,0,0,0.28);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  border-top: 1px solid rgba(255,255,255,0.03);
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  background: rgba(249,232,202,0.03);
+  transform: translateY(-1px);
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  color: rgba(249,232,202,0.95);
+  padding: 0.75rem 1rem;
+}
+
+.p-datatable .p-datatable-tbody > tr.p-highlight {
+  background: rgba(249,232,202,0.06);
+}
+
+.p-datatable .p-datatable-tbody .p-button {
+  box-shadow: none;
+}
+.admin-shell .p-datatable {
+  border: 2px solid rgba(88,1,10,0.6);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(0,0,0,0.32);
+}
+
+.p-dialog .p-dialog-content {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.p-dialog .p-dialog-titlebar {
+  background: transparent;
+  border: none;
+  padding: 0.12rem 0.4rem;
+  cursor: move;
+}
+.p-dialog .p-dialog-titlebar .p-dialog-title {
+  display: none;
+}
+.p-dialog .p-dialog-titlebar .p-dialog-titlebar-close,
+.modal-close-btn {
+  background: #ff4d4f;
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+  border: none;
+}
+.p-dialog {
+  background: transparent;
+}
+.drag-bar {
+  width: 64px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.12);
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.25);
+}
+.modal-drag-handle {
+  min-height: 20px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.p-dialog-header {
+  padding: 0;
+}
+
+.spectacle-modal .content-section {
+  background: rgba(0,0,0,0.55);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .spectacle-modal .content-section {
+    padding: 1.25rem;
+  }
 }

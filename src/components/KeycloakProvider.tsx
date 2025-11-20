@@ -8,13 +8,10 @@ interface KeycloakProviderProps {
 }
 
 export default function KeycloakProvider({ children }: KeycloakProviderProps) {
-  // Utiliser useMemo pour éviter de recréer l'instance à chaque render
   const keycloak = useMemo(() => getKeycloak(), [])
 
-  // Callback appelé quand Keycloak change d'état
   const onKeycloakEvent = (event: AuthClientEvent, error?: AuthClientError) => {
     if (event === 'onInitError') {
-      // Ignorer l'erreur de double initialisation en mode développement (React StrictMode)
       if (import.meta.env.DEV) {
         const errMessage =
           typeof error === 'string'
@@ -38,7 +35,6 @@ export default function KeycloakProvider({ children }: KeycloakProviderProps) {
     }
   }
 
-  // Callback appelé après l'initialisation de Keycloak
   const onKeycloakTokens = () => {
     if (import.meta.env.DEV) {
       console.log('Keycloak tokens received')
@@ -50,7 +46,7 @@ export default function KeycloakProvider({ children }: KeycloakProviderProps) {
       authClient={keycloak}
       initOptions={{
         onLoad: 'check-sso',
-        checkLoginIframe: false, // Désactiver l'iframe pour éviter les problèmes CORS
+        checkLoginIframe: false,
         pkceMethod: 'S256',
       }}
       onEvent={onKeycloakEvent}

@@ -6,7 +6,6 @@ export default function LogOutPage() {
   const hasLoggedOut = useRef(false)
 
   useEffect(() => {
-    // Éviter les appels multiples de logout (causés par StrictMode)
     if (isAuthenticated && !hasLoggedOut.current) {
       hasLoggedOut.current = true
       logout()

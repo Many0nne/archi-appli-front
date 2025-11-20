@@ -15,7 +15,6 @@ export const getKeycloak = () => {
   return keycloakInstance
 }
 
-// Fonction pour réinitialiser l'instance (utile en développement avec StrictMode)
 export const resetKeycloak = () => {
   keycloakInstance = null
 }

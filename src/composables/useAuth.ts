@@ -12,11 +12,9 @@ export function useAuthComposable() {
   const setUser = useAuth(state => state.setUser)
   const logoutStore = useAuth(state => state.logout)
 
-  // Synchroniser le token Keycloak avec le store
   useEffect(() => {
     if (initialized && keycloak.authenticated && keycloak.token) {
       setToken(keycloak.token)
-      // Récupérer les infos utilisateur depuis le token
       if (keycloak.tokenParsed) {
         setUser({
           username: keycloak.tokenParsed.preferred_username,
@@ -37,7 +35,6 @@ export function useAuthComposable() {
 
   const logout = useCallback(() => {
     logoutStore()
-    // Rediriger vers la page de logout Keycloak avec retour vers la page d'accueil
     keycloak.logout({ redirectUri: window.location.origin })
   }, [keycloak, logoutStore])
 
@@ -49,7 +46,6 @@ export function useAuthComposable() {
     async (input: RequestInfo, init: RequestInit = {}) => {
       const headers = new Headers(init.headers ?? undefined)
       
-      // Rafraîchir le token si nécessaire
       if (keycloak.authenticated && keycloak.isTokenExpired(5)) {
         try {
           await keycloak.updateToken(5)

@@ -1,21 +1,11 @@
-import { useEffect, useState } from 'react';
-import type { Spectacle } from '../types/spectacle';
-import { getSpectacles } from '../composables/useSpectable';
 import Navbar from '../components/navbar';
-import SpectacleCard from '../components/SpectacleCard';
 import ButtonT from '../components/button';
 import TitleT from '../components/title';
 import Stars from '../components/stars';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
-  const [spectacles, setSpectacles] = useState<Spectacle[]>([]);
-
-  useEffect(() => {
-    getSpectacles()
-      .then(setSpectacles)
-      .catch(console.error);
-  }, []);
-
+  const navigate = useNavigate()
   return (
     <>
       <Navbar />
@@ -27,20 +17,19 @@ export default function HomePage() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="flex flex-col items-center w-1/2">
+        <div className="flex flex-col items-center w-full">
           <Stars />
           <TitleT>NEW SHOW</TitleT>
           <h1
-            className="text-[7rem] outlined-title"
+            className="outlined-title text-[2.5rem] md:text-[3rem] lg:text-[4rem] xl:text-[5rem] responsive-shadow"
             style={{
               fontFamily: "'Limelight', cursive",
-              textShadow: '5px 5px #58010A, 6px 6px #58010A',
               color: '#F9E8CA',
             }}
           >
-            CABARET
+            Le Théâtre du Minotaure
           </h1>
-          <ButtonT>BUY TICKET</ButtonT>
+          <ButtonT onClick={() => navigate('/spectacles')}>Voir les spectacles</ButtonT>
         </div>
       </div>
     </>
