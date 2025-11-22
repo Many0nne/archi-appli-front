@@ -26,8 +26,18 @@ export default function SpectaclesPage() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return spectacles;
-    return spectacles.filter(s => {
+
+    const now = Date.now()
+    const future = spectacles.filter(s => {
+      if (!s?.date) return true
+      const ts = Date.parse(s.date)
+      if (Number.isNaN(ts)) return true
+      return ts >= now
+    })
+
+    if (!q) return future
+
+    return future.filter(s => {
       const title = (s.title || '').toLowerCase();
       const desc = (s.description || '').toLowerCase();
       return title.includes(q) || desc.includes(q);

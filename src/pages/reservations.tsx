@@ -6,7 +6,8 @@ import { getKeycloak } from '../config/keycloak'
 import { Toast } from 'primereact/toast'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { Button } from 'primereact/button'
+import { Card } from 'primereact/card'
+import ButtonT from '../components/button'
 
 export default function ReservationsPage() {
   const [items, setItems] = useState<any[]>([])
@@ -52,6 +53,23 @@ export default function ReservationsPage() {
     }
     fetchData()
   }, [isAuthenticated])
+
+  const now = Date.now()
+  const upcoming = items.filter(r => {
+    const d = r.spectacle?.date ?? r.date ?? r.createdAt
+    if (!d) return true
+    const t = Date.parse(d)
+    if (Number.isNaN(t)) return true
+    return t >= now
+  })
+
+  const past = items.filter(r => {
+    const d = r.spectacle?.date ?? r.date ?? r.createdAt
+    if (!d) return false
+    const t = Date.parse(d)
+    if (Number.isNaN(t)) return false
+    return t < now
+  })
 
   const cancelReservation = async (reservation: any) => {
     if (!reservation || !reservation.id) return
@@ -103,14 +121,11 @@ export default function ReservationsPage() {
             cancellable = when - now >= twoHours
           }
           return (
-            <Button
-              label="Annuler"
-              icon="pi pi-times"
+            <ButtonT
               className="p-button-danger p-button-sm"
               onClick={() => cancelReservation(row)}
               disabled={!cancellable}
-              title={cancellable ? 'Annuler la réservation' : 'Annulation impossible dans les 2 heures avant le spectacle'}
-            />
+            ><i className="pi pi-times"></i>{cancellable ? 'Annuler' : 'Annulation impossible 2h avant le spectacle'}</ButtonT>
           )
         })()
       }
@@ -120,18 +135,30 @@ export default function ReservationsPage() {
   return (
     <>
       <Navbar />
-      <main className="w-full min-h-screen px-4 md:px-8 lg:px-12 pb-12 pt-28 bg-[#A92831] flex justify-center">
+      <main className="w-full min-h-screen px-4 md:px-8 lg:px-12 pb-12 pt-28 bg-gray-50 flex justify-center">
         <div className="max-w-6xl w-full">
           <Toast ref={toast} />
-          <h2 className="text-2xl md:text-3xl font-semibold text-[#F9E8CA] mb-4">Mes réservations</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4">Mes réservations</h2>
 
-          <div className="card">
-            <DataTable value={items} loading={loading} emptyMessage="Aucune réservation trouvée">
-              <Column header="Spectacle" body={spectacleBody} />
-              <Column header="Date" body={dateBody} />
-              <Column header="Quantité" body={qtyBody} />
-              <Column header="Actions" body={actionsBody} style={{ width: 160 }} />
-            </DataTable>
+          <div className="flex flex-col gap-4">
+            <Card className="mb-6">
+              <h3 className="text-lg text-gray-800 font-medium mb-3">À venir <span className="text-sm text-gray-500">({upcoming.length})</span></h3>
+              <DataTable value={upcoming} loading={loading} emptyMessage="Aucune réservation à venir" className="p-datatable-sm">
+                <Column header="Spectacle" body={spectacleBody} style={{ fontFamily: 'Limelight' }} />
+                <Column header="Date" body={dateBody} />
+                <Column header="Quantité" body={qtyBody} />
+                <Column header="Actions" body={actionsBody} style={{ width: 160 }} />
+              </DataTable>
+            </Card>
+
+            <Card>
+              <h3 className="text-lg text-gray-800 font-medium mt-4 mb-3">Passées <span className="text-sm text-gray-500">({past.length})</span></h3>
+              <DataTable value={past} loading={loading} emptyMessage="Aucune réservation passée" className="p-datatable-sm">
+                <Column header="Spectacle" body={spectacleBody} style={{ fontFamily: 'Limelight' }} />
+                <Column header="Date" body={dateBody} />
+                <Column header="Quantité" body={qtyBody} />
+              </DataTable>
+            </Card>
           </div>
         </div>
       </main>
