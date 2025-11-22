@@ -211,7 +211,15 @@ export default function AdminPage() {
                 </div>
 
                 <label className="block text-gray-700">Date</label>
-                <Calendar className="w-full" value={editing.date ? new Date(editing.date) : null} onChange={e => setEditing({ ...editing, date: (e.value as Date)?.toISOString() ?? '' })} dateFormat="dd/mm/yy" showTime />
+                <Calendar className="w-full" value={editing.date ? new Date(editing.date) : null} onChange={e => {
+                  const dateValue = e.value as Date
+                  if (dateValue) {
+                    const formatted = dateValue.toISOString().slice(0, 19)
+                    setEditing({ ...editing, date: formatted })
+                  } else {
+                    setEditing({ ...editing, date: '' })
+                  }
+                }} dateFormat="dd/mm/yy" showTime />
 
                 <div className="flex justify-end gap-3 mt-4">
                   <ButtonT className="p-button-secondary" style={{background: '#F9E8CA'}} onClick={() => setOpenDialog(false)}>Annuler</ButtonT>

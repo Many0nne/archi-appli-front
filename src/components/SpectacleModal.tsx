@@ -77,7 +77,8 @@ export default function SpectacleModal({ id, visible, onHide, onReserved }: { id
       </div>
       <div className="mb-3">
         <div className="text-sm text-white/80">Quantité</div>
-        <InputNumber value={qty} onValueChange={e => setQty(Number(e.value))} min={1} max={spectacle?.availableTickets ?? 1} inputClassName="w-full text-black" />
+        <InputNumber value={qty} onValueChange={e => setQty(Number(e.value))} min={1} max={Math.min(spectacle?.availableTickets ?? 1, 50)} inputClassName="w-full text-black" />
+        <div className="text-xs text-white/60 mt-1">Maximum 50 billets par transaction</div>
       </div>
       <div className="mb-4">
         <div className="text-sm text-white/80">Total</div>
