@@ -15,8 +15,8 @@ export async function apiCall<Response, Body = unknown>(
     if (kc && typeof kc.token === 'string' && kc.token.length > 0) {
       authHeader = { Authorization: `Bearer ${kc.token}` }
     }
-  } catch (err) {
-  
+  } catch {
+    // Ignorer les erreurs de récupération du token
   }
 
   const hdrs: Record<string, string> = {}
@@ -33,7 +33,31 @@ export async function apiCall<Response, Body = unknown>(
 
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(`API error ${res.status}: ${text}`);
+    let errorMessage = `Erreur ${res.status}`;
+
+    // Essayer de parser la réponse JSON d'erreur du backend
+    try {
+      const errorData = JSON.parse(text);
+
+      // Si c'est une erreur de validation avec des détails par champ
+      if (errorData.errors && typeof errorData.errors === 'object') {
+        const errorMessages = Object.entries(errorData.errors)
+          .map(([field, msg]) => `${field}: ${msg}`)
+          .join(', ');
+        errorMessage = errorMessages || errorData.message || errorMessage;
+      }
+      // Si c'est une erreur simple avec juste un message
+      else if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // Si le parsing JSON échoue, utiliser le texte brut s'il est significatif
+      if (text && text.length > 0 && text.length < 200) {
+        errorMessage = text;
+      }
+    }
+
+    throw new Error(errorMessage);
   }
 
   const raw = await res.text(); 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import Navbar from '../components/navbar'
 import { getSpectacles } from '../composables/useSpectable'
 import { getStats, createSpectacle, updateSpectacle, deleteSpectacle } from '../composables/useStats'
@@ -12,6 +12,7 @@ import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
 import { InputNumber } from 'primereact/inputnumber'
 import { Calendar } from 'primereact/calendar'
+import { Toast } from 'primereact/toast'
 
 export default function AdminPage() {
   const [spectacles, setSpectacles] = useState<Spectacle[]>([])
@@ -21,6 +22,8 @@ export default function AdminPage() {
 
   const [openDialog, setOpenDialog] = useState(false)
   const [editing, setEditing] = useState<Spectacle | null>(null)
+
+  const toast = useRef<Toast>(null)
 
   useEffect(() => {
     fetchAll()
@@ -80,16 +83,23 @@ export default function AdminPage() {
 
       if (id && id > 0) {
         await updateSpectacle(id, payload)
+        toast.current?.show({ severity: 'success', summary: 'Succès', detail: 'Spectacle modifié', life: 3000 })
       } else {
         await createSpectacle(payload)
+        toast.current?.show({ severity: 'success', summary: 'Succès', detail: 'Spectacle créé', life: 3000 })
       }
       setOpenDialog(false)
       setEditing(null)
       await fetchAll()
       await fetchStats()
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Save failed', err)
-      alert('Erreur lors de l\'enregistrement')
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: err instanceof Error ? err.message : 'Erreur lors de l\'enregistrement',
+        life: 5000
+      })
     }
   }
 
@@ -98,11 +108,17 @@ export default function AdminPage() {
     if (!confirm('Supprimer ce spectacle ?')) return
     try {
       await deleteSpectacle(id)
+      toast.current?.show({ severity: 'success', summary: 'Succès', detail: 'Spectacle supprimé', life: 3000 })
       await fetchAll()
       await fetchStats()
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Delete failed', err)
-      alert('Erreur lors de la suppression')
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: err instanceof Error ? err.message : 'Erreur lors de la suppression',
+        life: 5000
+      })
     }
   }
 
@@ -133,6 +149,7 @@ export default function AdminPage() {
 
   return (
     <>
+      <Toast ref={toast} />
       <Navbar />
 
       <main className="w-full flex justify-center bg-gray-50 min-h-screen px-4 md:px-8 lg:px-12 pb-12 pt-28">
