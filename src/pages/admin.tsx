@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Navbar from '../components/navbar'
 import { getSpectacles } from '../composables/useSpectable'
 import { getStats, createSpectacle, updateSpectacle, deleteSpectacle } from '../composables/useStats'
-import type { AdminStats } from '../types/admin'
+import type { AdminStats, SalesBySpectacleItem } from '../types/admin'
 import type { Spectacle, SpectacleRequest } from '../types/spectacle'
 import { Divider } from 'primereact/divider'
 import { DataTable } from 'primereact/datatable'
@@ -60,9 +60,12 @@ export default function AdminPage() {
     setOpenDialog(true)
   }
 
-  function formatDateForBackend(date: string | Date): string {
+  function formatDateForBackend(date: string | Date | null | undefined): string {
+    if (!date) return ''
     // Normalise la date au format yyyy-MM-dd'T'HH:mm:ss (sans microsecondes)
-    const d = typeof date === 'string' ? new Date(date) : date
+    const d = date instanceof Date ? date : new Date(date)
+    // Vérifier si la date est valide
+    if (isNaN(d.getTime())) return ''
     return d.toISOString().slice(0, 19)
   }
 
@@ -81,6 +84,7 @@ export default function AdminPage() {
         await createSpectacle(payload)
       }
       setOpenDialog(false)
+      setEditing(null)
       await fetchAll()
       await fetchStats()
     } catch (err) {
@@ -155,7 +159,7 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.salesBySpectacle.map((s: any) => (
+                    {stats.salesBySpectacle.map((s: SalesBySpectacleItem) => (
                       <tr key={s.spectacleId} className="border-t border-gray-200">
                         <td className="p-2">{s.title}</td>
                         <td className="p-2">{s.ticketsSold}</td>
@@ -184,7 +188,7 @@ export default function AdminPage() {
               <Column header="Date" body={(row: Spectacle) => {
                 try {
                   return row.date ? new Date(row.date).toLocaleString() : '-'
-                } catch (_e) {
+                } catch {
                   return String(row.date ?? '-')
                 }
               }} />
@@ -222,15 +226,16 @@ export default function AdminPage() {
                 </div>
 
                 <label className="block text-gray-700">Date</label>
-                <Calendar className="w-full" value={editing.date ? new Date(editing.date) : null} onChange={e => {
-                  const dateValue = e.value as Date
-                  if (dateValue) {
-                    const formatted = dateValue.toISOString().slice(0, 19)
-                    setEditing({ ...editing, date: formatted })
-                  } else {
-                    setEditing({ ...editing, date: '' })
-                  }
-                }} dateFormat="dd/mm/yy" showTime />
+                <Calendar
+                  className="w-full"
+                  value={editing.date ? new Date(editing.date) : null}
+                  onChange={e => setEditing({ ...editing, date: (e.value as Date | null) || '' })}
+                  dateFormat="dd/mm/yy"
+                  showTime
+                  hourFormat="24"
+                  stepMinute={15}
+                  showIcon
+                />
 
                 <div className="flex justify-end gap-3 mt-4">
                   <ButtonT className="p-button-secondary" style={{background: '#F9E8CA'}} onClick={() => setOpenDialog(false)}>Annuler</ButtonT>
