@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Spectacle } from '../types/spectacle';
 import { getSpectacles } from '../composables/useSpectable';
 import Navbar from '../components/navbar';
+import { InputText } from 'primereact/inputtext';
+import { IconField } from 'primereact/iconfield';
+import { InputIcon } from 'primereact/inputicon';
 import SpectacleCard from '../components/SpectacleCard';
 import SpectacleModal from '../components/SpectacleModal';
 
@@ -48,34 +51,22 @@ export default function SpectaclesPage() {
     <>
       <Navbar />
 
-      <main className="w-full min-h-screen px-4 md:px-8 lg:px-12 pb-12 pt-28 bg-[#A92831] flex justify-center">
+      <main className="w-full min-h-screen px-4 md:px-8 lg:px-12 pb-12 pt-28 bg-[#F9FAFB] flex justify-center">
         <div className="max-w-7xl mx-auto gap-4 flex flex-col">
           <header className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-semibold text-[#F9E8CA] mb-2">Spectacles</h2>
-            <p className="text-sm text-white/80">Parcourez nos spectacles — utilisez la recherche pour filtrer.</p>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-2">Spectacles</h2>
+            <p className="text-sm">Parcourez nos spectacles — utilisez la recherche pour filtrer.</p>
           </header>
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div className="flex-1">
-              <label className="relative block">
-                <span className="sr-only">Recherche</span>
-                <span className="absolute inset-y-0 left-0 z-10 flex items-center pl-3 text-white/70">
-                  <i className="pi pi-search" aria-hidden />
-                </span>
-                <input
-                  type="search"
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  placeholder="Rechercher un spectacle, mot-clé, artiste..."
-                  className="search-input w-full pl-10 pr-4 py-3 rounded bg-white/6 text-white placeholder-white/60 focus:ring-2 focus:ring-[#F9E8CA] outline-none"
-                />
-              </label>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-white/80">{filtered.length} résultat{filtered.length > 1 ? 's' : ''}</div>
-            </div>
-          </div>
+          <IconField iconPosition="left">
+            <InputIcon className="pi pi-search" style={{ top: '34%' }}></InputIcon>
+            <InputText
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Rechercher un spectacle, mot-clé, artiste..."
+              className="w-full"
+            />
+          </IconField>
 
           <section>
             {filtered.length === 0 ? (

@@ -4,7 +4,7 @@ import { apiCall } from './useApi'
 
 export async function getSpectacles(): Promise<Spectacle[]> {
   const response = await apiCall<PageableResponse<Spectacle>>('/spectacles')
-  return response.content
+  return response?.content ?? []
 }
 
 export async function getSpectacle(id: number): Promise<Spectacle> {

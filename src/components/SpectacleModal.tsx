@@ -69,23 +69,23 @@ export default function SpectacleModal({ id, visible, onHide, onReserved }: { id
   }
 
   const right = (
-    <div className="p-4 rounded-md" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))', border: '1px solid rgba(88,1,10,0.25)' }}>
-      <h3 className="text-lg text-[#F9E8CA] mb-2">Commander</h3>
+    <div className="p-4 rounded-md bg-white" style={{ border: '1px solid rgba(88,1,10,0.08)' }}>
+      <h3 className="text-lg text-[#58010A] mb-2">Commander</h3>
       <div className="mb-3">
-        <div className="text-sm text-white/80">Disponibles</div>
-        <div className="text-2xl font-semibold text-[#F9E8CA]">{spectacle?.availableTickets ?? '-'}</div>
+        <div className="text-sm text-gray-500">Disponibles</div>
+        <div className="text-2xl font-semibold text-[#58010A]">{spectacle?.availableTickets ?? '-'}</div>
       </div>
       <div className="mb-3">
-        <div className="text-sm text-white/80">Quantité</div>
+        <div className="text-sm text-gray-500">Quantité</div>
         <InputNumber value={qty} onValueChange={e => setQty(Number(e.value))} min={1} max={Math.min(spectacle?.availableTickets ?? 1, 50)} inputClassName="w-full text-black" />
-        <div className="text-xs text-white/60 mt-1">Maximum 50 billets par transaction</div>
+        <div className="text-xs text-gray-400 mt-1">Maximum 50 billets par transaction</div>
       </div>
       <div className="mb-4">
-        <div className="text-sm text-white/80">Total</div>
-        <div className="text-2xl font-semibold text-[#F9E8CA]">{((spectacle?.price ?? 0) * qty).toFixed(2)} €</div>
+        <div className="text-sm text-gray-500">Total</div>
+        <div className="text-2xl font-semibold text-[#58010A]">{((spectacle?.price ?? 0) * qty).toFixed(2)} €</div>
       </div>
       <div>
-        <ButtonT onClick={placeOrder} disabled={!(spectacle && spectacle.availableTickets > 0) || loading} className={`w-full`}>
+        <ButtonT onClick={placeOrder} disabled={!(spectacle && spectacle.availableTickets > 0) || loading}>
           Commander
         </ButtonT>
       </div>
@@ -103,44 +103,41 @@ export default function SpectacleModal({ id, visible, onHide, onReserved }: { id
   return (
     <Dialog visible={visible} onHide={onHide} header={headerContent} style={{ width: '95%', maxWidth: 980 }} modal className="p-0" closable={false} draggable>
       <Toast ref={toast} />
-      <div
-        className="spectacle-modal text-white p-4 md:p-6 rounded-lg shadow-lg"
-        style={{
-          backgroundImage: "url('/9505443_2049.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
 
         <div className="content-section">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="text-sm text-white/80">{spectacle ? new Date(spectacle.date).toLocaleString() : ''}</div>
-              <h3 className="text-2xl text-[#F9E8CA] font-semibold mt-1">{spectacle?.title ?? ''}</h3>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="md:col-span-3 order-1 md:order-1">
-                {loading ? (
-                <div className="text-white/70">Chargement...</div>
-                ) : spectacle ? (
-                <div>
-                    <img src={spectacle.imageUrl} alt={spectacle.title} className="w-full h-56 md:h-80 object-cover rounded-md" />
-                    <div className="mt-4">
-                    <p className="text-white/90 mt-1 leading-relaxed max-h-56 overflow-y-auto pr-2">{spectacle.description}</p>
-                    </div>
+            <div className="flex flex-col md:flex-row md:items-start gap-6">
+              <div className="flex-1">
+                <div className="relative">
+                  {spectacle ? (
+                    <img src={spectacle.imageUrl} alt={spectacle.title} className="w-full h-64 object-cover rounded-md" />
+                  ) : (
+                    <div className="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-500 rounded-md">Aucune image</div>
+                  )}
                 </div>
-                ) : (
-                <div className="text-white/70">Introuvable</div>
-                )}
-            </div>
-            <div className="md:col-span-1 order-3 md:order-2">
-                {right}
-            </div>
+
+                <div className="py-2">
+                  <div className="text-sm text-gray-500">{spectacle ? new Date(spectacle.date).toLocaleString() : ''}</div>
+                  <h3 className="text-2xl text-[#58010A] font-semibold mt-1">{spectacle?.title ?? ''}</h3>
+
+                  <div>
+                    {loading ? (
+                      <div className="text-gray-500">Chargement...</div>
+                    ) : spectacle ? (
+                      <p className="text-gray-700 mt-1 leading-relaxed max-h-72 overflow-y-auto pr-2">{spectacle.description}</p>
+                    ) : (
+                      <div className="text-gray-500">Introuvable</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full md:w-80 md:shrink-0">
+                <div className="md:sticky md:top-24">
+                  {right}
+                </div>
+              </div>
             </div>
         </div>
-      </div>
     </Dialog>
   )
 }

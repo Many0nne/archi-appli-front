@@ -1,4 +1,3 @@
-import Navbar from '../components/navbar';
 import ButtonT from '../components/button';
 import TitleT from '../components/title';
 import Stars from '../components/stars';
@@ -8,7 +7,6 @@ export default function HomePage() {
   const navigate = useNavigate()
   return (
     <>
-      <Navbar />
       <div
         className="w-full min-h-screen items-center flex"
         style={{
