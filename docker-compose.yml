@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_BASE=http://localhost:8080/api
+      - VITE_KEYCLOAK_URL=https://key.serveralin.work/
+      - VITE_KEYCLOAK_REALM=archiapp
+      - VITE_KEYCLOAK_CLIENT_ID=archiapp-backend
+    restart: unless-stopped

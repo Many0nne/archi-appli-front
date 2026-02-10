@@ -33,32 +33,14 @@
 }
 
 @media (min-width: 768px) {
+  /*à garder pour la homepage*/
   .responsive-shadow {
     text-shadow: 5px 5px #58010A, 6px 6px #58010A;
   }
+  /* à garder pour la homepage */
   .outlined-title {
     -webkit-text-stroke: 1px #58010A;
   }
-}
-
-.search-input {
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  background: rgba(0,0,0,0.32);
-  color: #ffffff;
-  border: 1px solid rgba(255,255,255,0.12);
-  caret-color: #F9E8CA;
-  transition: box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
-}
-
-.search-input::placeholder {
-  color: rgba(255,255,255,0.70);
-  opacity: 1;
-}
-
-.search-input:focus {
-  box-shadow: 0 0 0 6px rgba(249,232,202,0.08);
-  border-color: rgba(249,232,202,0.45);
 }
 
 .spectacle-card {
@@ -70,16 +52,13 @@
 }
 
 .p-card-custom {
-  background: rgba(0,0,0,0.36);
-  border: 3px solid rgba(88,1,10,1);
+  border: 1px solid black;
   box-shadow: 2px 2px #58010A;
   transition: transform 180ms ease, box-shadow 180ms ease;
   border-radius: 0.75rem;
   overflow: hidden;
-  color: #F9E8CA;
 }
 .p-card-custom .p-card-title {
-  color: #F9E8CA;
   font-family: 'Limelight', cursive;
   font-size: 1.125rem;
 }

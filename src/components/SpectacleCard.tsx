@@ -38,8 +38,7 @@ export default function SpectacleCard({ spectacle, onBuy, onOpen, className }: P
 	const footer = (
 		<div>
 			<div>
-				<div style={{ fontWeight: 600, color: '#F9E8CA' }}>Prix</div>
-				<div style={{ color: '#fff' }}>{spectacle.price.toFixed(2)} €</div>
+				<div style={{ fontWeight: 600}}>Prix : {spectacle.price.toFixed(2)} €</div>
 			</div>
 			<div style={{ textAlign: 'right' }}>
 				<ButtonT onClick={() => onBuy?.(spectacle.id)} className={spectacle.availableTickets <= 0 ? 'opacity-60 cursor-not-allowed' : ''}>
@@ -53,13 +52,13 @@ export default function SpectacleCard({ spectacle, onBuy, onOpen, className }: P
 	return (
 		<div onClick={() => onOpen?.()} style={{ cursor: 'pointer' }}>
 			<Card
-				title={spectacle.title}
+				title={<div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={spectacle.title}>{spectacle.title}</div>}
 				subTitle={formattedDate}
 				header={header}
 				footer={footer}
 				className={`${className ?? ''} p-card-custom md:w-25rem`.trim()}
 			>
-				<p className="m-0 text-white/90" style={{ height: 80, overflowY: 'hidden', paddingRight: 6 }}>{spectacle.description}</p>
+				<p className="m-0" style={{ height: 80, overflowY: 'scroll', paddingRight: 6 }}>{spectacle.description}</p>
 			</Card>
 		</div>
 	);
