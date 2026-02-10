@@ -3,7 +3,7 @@ import Navbar from '../components/navbar'
 import { getSpectacles } from '../composables/useSpectable'
 import { getStats, createSpectacle, updateSpectacle, deleteSpectacle } from '../composables/useStats'
 import type { AdminStats } from '../types/admin'
-import type { Spectacle } from '../types/spectacle'
+import type { Spectacle, SpectacleRequest } from '../types/spectacle'
 import { Divider } from 'primereact/divider'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
@@ -60,13 +60,24 @@ export default function AdminPage() {
     setOpenDialog(true)
   }
 
+  function formatDateForBackend(date: string | Date): string {
+    // Normalise la date au format yyyy-MM-dd'T'HH:mm:ss (sans microsecondes)
+    const d = typeof date === 'string' ? new Date(date) : date
+    return d.toISOString().slice(0, 19)
+  }
+
   async function save() {
     if (!editing) return
     try {
-      if (editing.id && editing.id > 0) {
-        await updateSpectacle(editing.id, editing)
+      const { id, ...rest } = editing
+      const payload: SpectacleRequest = {
+        ...rest,
+        date: rest.date ? formatDateForBackend(rest.date) : ''
+      }
+
+      if (id && id > 0) {
+        await updateSpectacle(id, payload)
       } else {
-        const { id: _omit, ...payload } = editing as any
         await createSpectacle(payload)
       }
       setOpenDialog(false)
@@ -173,7 +184,7 @@ export default function AdminPage() {
               <Column header="Date" body={(row: Spectacle) => {
                 try {
                   return row.date ? new Date(row.date).toLocaleString() : '-'
-                } catch (e) {
+                } catch (_e) {
                   return String(row.date ?? '-')
                 }
               }} />

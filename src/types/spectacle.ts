@@ -7,3 +7,6 @@ export type Spectacle = {
   availableTickets: number;
   imageUrl: string;
 };
+
+export type SpectacleRequest = Omit<Spectacle, 'id'>;
+
