@@ -11,8 +11,11 @@ export default function Navbar() {
   const items: any[] = [
     { label: 'Home', icon: 'pi pi-home', command: () => navigate('/') },
     { label: 'Spectacles', icon: 'pi pi-calendar', command: () => navigate('/spectacles') },
-    { label: 'Mes réservations', icon: 'pi pi-ticket', command: () => navigate('/reservations') },
   ]
+
+  if (isAuthenticated) {
+    items.push({ label: 'Mes réservations', icon: 'pi pi-ticket', command: () => navigate('/reservations') })
+  }
 
   if (isAdmin) {
     items.push({ label: 'Admin', icon: 'pi pi-cog', command: () => navigate('/admin') })

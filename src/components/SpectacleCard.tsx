@@ -12,10 +12,10 @@ interface Props {
 export default function SpectacleCard({ spectacle, onBuy, onOpen, className }: Props) {
 	const formattedDate = (() => {
 		try {
-			const d = new Date(spectacle.date);
+			const d = spectacle.date instanceof Date ? spectacle.date : new Date(spectacle.date);
 			return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 		} catch {
-			return spectacle.date;
+			return typeof spectacle.date === 'string' ? spectacle.date : String(spectacle.date);
 		}
 	})();
 

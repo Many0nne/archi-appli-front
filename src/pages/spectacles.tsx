@@ -33,7 +33,7 @@ export default function SpectaclesPage() {
     const now = Date.now()
     const future = spectacles.filter(s => {
       if (!s?.date) return true
-      const ts = Date.parse(s.date)
+      const ts = s.date instanceof Date ? s.date.getTime() : Date.parse(s.date)
       if (Number.isNaN(ts)) return true
       return ts >= now
     })

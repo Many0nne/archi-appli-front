@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage'
 import LogInPage from './pages/logIn'
 import KeycloakProvider from './components/KeycloakProvider'
 import RequireRole from './components/RequireRole'
+import ProtectedRoute from './components/ProtectedRoute'
 import SpectaclesPage from './pages/spectacles'
 import AdminPage from './pages/admin'
 import ReservationsPage from './pages/reservations'
@@ -20,7 +21,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/spectacles" element={<SpectaclesPage />} />
           <Route path="/admin" element={<RequireRole role="ADMIN"><AdminPage /></RequireRole>} />
-          <Route path="/reservations" element={<ReservationsPage />} />
+          <Route path="/reservations" element={<ProtectedRoute><ReservationsPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
