@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Spectacle } from '../types/spectacle';
 import { getSpectacles } from '../composables/useSpectable';
 import Navbar from '../components/navbar';
@@ -14,9 +14,9 @@ export default function SpectaclesPage() {
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined)
   const [modalOpen, setModalOpen] = useState(false)
 
-  const fetchSpectacles = async () => {
+  const fetchSpectacles = async (search?: string) => {
     try {
-      const data = await getSpectacles()
+      const data = await getSpectacles(search || undefined)
       setSpectacles(data)
     } catch (err) {
       console.error('Could not load spectacles', err)
@@ -27,8 +27,12 @@ export default function SpectaclesPage() {
     fetchSpectacles()
   }, [])
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchSpectacles(query.trim() || undefined)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [query])
 
     const now = Date.now()
     const future = spectacles.filter(s => {
@@ -81,7 +85,7 @@ export default function SpectaclesPage() {
               </div>
             )}
           </section>
-          <SpectacleModal id={selectedId} visible={modalOpen} onHide={() => setModalOpen(false)} onReserved={() => fetchSpectacles()} />
+          <SpectacleModal id={selectedId} visible={modalOpen} onHide={() => setModalOpen(false)} onReserved={() => fetchSpectacles(query.trim() || undefined)} />
         </div>
       </main>
     </>

@@ -15,8 +15,8 @@ export async function apiCall<Response, Body = unknown>(
     if (kc && typeof kc.token === 'string' && kc.token.length > 0) {
       authHeader = { Authorization: `Bearer ${kc.token}` }
     }
-  } catch {
-    // Ignorer les erreurs de récupération du token
+  } catch (err) {
+    console.warn('Keycloak unavailable, sending request without auth header', err)
   }
 
   const hdrs: Record<string, string> = {}
