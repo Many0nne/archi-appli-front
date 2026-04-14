@@ -1,6 +1,11 @@
 # Archi Appli Front
 
-Projet frontend React + TypeScript + Vite (contexte etudiant) avec authentification Keycloak, parcours reservation et espace admin.
+Frontend React + TypeScript + Vite (contexte etudiant) pour une plateforme de spectacles:
+
+- authentification Keycloak
+- consultation et recherche de spectacles
+- reservation de billets
+- espace admin (stats + gestion de spectacles)
 
 ## Prerequis
 
@@ -13,47 +18,96 @@ Projet frontend React + TypeScript + Vite (contexte etudiant) avec authentificat
 npm install
 ```
 
-## Lancer l'application
+## Configuration
+
+Le projet lit ces variables Vite:
+
+- `VITE_API_BASE` (obligatoire): base URL API (ex: `http://localhost:8080/api`)
+- `VITE_KEYCLOAK_URL` (obligatoire hors mock): URL Keycloak
+- `VITE_KEYCLOAK_REALM` (obligatoire hors mock): realm Keycloak
+- `VITE_KEYCLOAK_CLIENT_ID` (obligatoire hors mock): client ID Keycloak
+- `VITE_E2E_MOCK_AUTH` (optionnel): mode auth mock pour tests E2E
+
+Exemple `.env.local`:
+
+```bash
+VITE_API_BASE=http://localhost:8080/api
+VITE_KEYCLOAK_URL=https://key.serveralin.work/
+VITE_KEYCLOAK_REALM=archiapp
+VITE_KEYCLOAK_CLIENT_ID=archiapp-backend
+```
+
+## Lancer en local
 
 ```bash
 npm run dev
 ```
 
-## Scripts utiles
+Application disponible via Vite (port affiche dans le terminal).
 
-- `npm run dev`: demarrage local
-- `npm run build`: build TypeScript + Vite
-- `npm run preview`: preview build
-- `npm run lint`: lint
-- `npm run test`: mode watch Vitest
-- `npm run test:run`: execution complete unit/integration
-- `npm run test:coverage`: rapport de couverture
-- `npm run test:e2e`: smoke E2E Playwright
+## Scripts
 
-## Tests en place
+- `npm run dev`: demarrage local Vite
+- `npm run build`: compilation TypeScript + build Vite
+- `npm run preview`: preview du build
+- `npm run lint`: verification ESLint
+- `npm run test`: Vitest en mode watch
+- `npm run test:run`: execution unitaire/integration en une passe
+- `npm run test:coverage`: execution + couverture
+- `npm run test:e2e`: scenarios E2E Playwright
 
-### Unitaires / Integration (Vitest + RTL + MSW)
+## Tests
 
-- Tests composables API et reservation
-- Tests composant `RequireRole`
-- Tests integration `SpectacleModal`
-- Tests de contrats front minimaux sur `Spectacle` et `Reservation`
+### Unitaires / integration (Vitest + Testing Library + MSW)
 
-### E2E smoke (Playwright)
+Couverture des zones principales:
 
-- 1 scenario smoke sur page d accueil
-- Mode auth mocke pour eviter la dependance Keycloak en CI locale
+- composants de securite (`ProtectedRoute`, `RequireRole`, `Navbar`)
+- composants metier (`SpectacleCard`, `SpectacleModal`, etc.)
+- hooks/composables (`useReservation`, `useSpectacle`, `useStats`, ...)
+- flux de reservation et regles UI associees
 
-## Strategie (scope etudiant)
+### E2E (Playwright)
 
-- Objectif: robustesse pragmatique, pas d overkill.
-- Les tests "enterprise" lourds sont exclus (SSO reel CI, chaos testing, etc.).
-- La politique complete est documentee dans `spec.md`.
+Scenarios presents dans `e2e/`:
 
-## Commandes de verification rapide
+- auth (`auth.spec.ts`)
+- reservations (`reservations.spec.ts`)
+- spectacles (`spectacles.spec.ts`)
+- admin (`admin.spec.ts`)
+
+Les E2E tournent en mode auth mock (`VITE_E2E_MOCK_AUTH=true`) pour rester independants d un serveur Keycloak reel.
+
+## Docker
+
+Build + run via Compose:
+
+```bash
+docker compose up --build
+```
+
+Puis ouvrir `http://localhost:5173`.
+
+Le conteneur runtime sert le build statique via Nginx.
+
+## Structure utile
+
+- `src/pages/`: pages applicatives (home, login, spectacles, reservations, admin)
+- `src/components/`: composants UI et composants de protection des routes
+- `src/composables/`: logique metier et acces API
+- `src/config/keycloak.ts`: initialisation Keycloak
+- `src/test/msw/`: fixtures et handlers pour tests
+- `e2e/`: scenarios Playwright
+
+## Verification rapide
 
 ```bash
 npm run lint
 npm run test:run
 npm run test:e2e
 ```
+
+## Notes
+
+- En local, sans variables Keycloak valides, les flux relies a l authentification reelle peuvent echouer.
+- Pour les scenarios automatisees, privilegier le mode mock E2E.
