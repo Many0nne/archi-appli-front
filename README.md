@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# Archi Appli Front
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Projet frontend React + TypeScript + Vite (contexte etudiant) avec authentification Keycloak, parcours reservation et espace admin.
 
-Currently, two official plugins are available:
+## Prerequis
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js 20+
+- npm 10+
 
-## React Compiler
+## Installation
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Lancer l'application
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Scripts utiles
+
+- `npm run dev`: demarrage local
+- `npm run build`: build TypeScript + Vite
+- `npm run preview`: preview build
+- `npm run lint`: lint
+- `npm run test`: mode watch Vitest
+- `npm run test:run`: execution complete unit/integration
+- `npm run test:coverage`: rapport de couverture
+- `npm run test:e2e`: smoke E2E Playwright
+
+## Tests en place
+
+### Unitaires / Integration (Vitest + RTL + MSW)
+
+- Tests composables API et reservation
+- Tests composant `RequireRole`
+- Tests integration `SpectacleModal`
+- Tests de contrats front minimaux sur `Spectacle` et `Reservation`
+
+### E2E smoke (Playwright)
+
+- 1 scenario smoke sur page d accueil
+- Mode auth mocke pour eviter la dependance Keycloak en CI locale
+
+## Strategie (scope etudiant)
+
+- Objectif: robustesse pragmatique, pas d overkill.
+- Les tests "enterprise" lourds sont exclus (SSO reel CI, chaos testing, etc.).
+- La politique complete est documentee dans `spec.md`.
+
+## Commandes de verification rapide
+
+```bash
+npm run lint
+npm run test:run
+npm run test:e2e
 ```
